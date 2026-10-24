@@ -117,7 +117,12 @@
       </label>
 
       <p id="status">No file selected.</p>
-    </section>
+
+<img
+  id="preview"
+  style="display:none; max-width:100%; margin-top:20px; border-radius:10px;"
+  alt="Selected medical image"
+/>
 
     <section class="panel">
       <h2>Analysis Tools</h2>
@@ -142,16 +147,26 @@
   <script>
     const scan = document.getElementById("scan");
     const status = document.getElementById("status");
+const preview = document.getElementById("preview");
+scan.addEventListener("change", function () {
+  if (scan.files.length > 0) {
+    const file = scan.files[0];
+    status.textContent = "Selected file: " + file.name;
 
-    scan.addEventListener("change", function () {
-      if (scan.files.length > 0) {
-        status.textContent =
-          "Selected file: " + scan.files[0].name;
-      } else {
-        status.textContent = "No file selected.";
-      }
-    });
-  </script>
-
-</body>
+    if (file.type.startsWith("image/")) {
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+    } else {
+      preview.style.display = "none";
+      preview.removeAttribute("src");
+      status.textContent =
+        "File selected, but image preview is not supported for this format.";
+    }
+  } else {
+    status.textContent = "No file selected.";
+    preview.style.display = "none";
+    preview.removeAttribute("src");
+  }
+});
+</script> </body>
 </html>
